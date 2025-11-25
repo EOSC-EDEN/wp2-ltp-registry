@@ -43,7 +43,8 @@ SELECT
         # Try to get explicit rdfs:label for property
         OPTIONAL { ?prop rdfs:label ?propLabelRaw . }
 
-        # Try to get explicit rdfs:label, foaf:name, OR vcard:fn for the value
+        # Try to get explicit label for value (SKOS first, then generic)
+        OPTIONAL { ?val skos:prefLabel ?valSkosLabel . }
         OPTIONAL { ?val rdfs:label ?valLabelRaw . }
         OPTIONAL { ?val foaf:name ?valNameRaw . }
         OPTIONAL { ?val vcard:fn ?valFnRaw . }
@@ -55,8 +56,8 @@ SELECT
         BIND(REPLACE(?propLabelNoHyphens, "([a-z])([A-Z])", "$1 $2") AS ?propLabelSpaced)
         BIND(CONCAT(UCASE(SUBSTR(?propLabelSpaced, 1, 1)), SUBSTR(?propLabelSpaced, 2)) AS ?propLabel)
 
-        # For value: use foaf:name, vcard:fn, then rdfs:label, then fallback to URI/literal
-        BIND(COALESCE(?valNameRaw, ?valFnRaw, ?valLabelRaw,
+        # For value: use skos:prefLabel, then foaf:name, vcard:fn, then rdfs:label, then fallback
+        BIND(COALESCE(?valSkosLabel, ?valNameRaw, ?valFnRaw, ?valLabelRaw,
                       IF(isURI(?val), REPLACE(STR(?val), "^.*[/#]([^/#]+)$", "$1"), STR(?val)))
              AS ?valLabelRaw2)
 
@@ -95,7 +96,7 @@ SELECT
     }
     UNION
     {
-        # Block 4: New block to specifically handle and format CPPs
+        # Block 4: CPPs
         ?service a dcat:DataService ;
                  obo:BFO_0000067 ?cpp .
         

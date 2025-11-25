@@ -13,9 +13,22 @@ PREFIX cpp:   <https://eden-fidelis.eu/example/cpp/>
 PREFIX obo:   <http://purl.obolibrary.org/obo/>
 PREFIX sio:   <http://semanticscience.org/resource/>
 
+# --- Type Definitions ---
+
+<https://eden-fidelis.eu/example/registry/type/Repository>
+    a skos:Concept ;
+    skos:prefLabel "Repository"@en .
+
+<https://eden-fidelis.eu/example/registry/type/Service>
+    a skos:Concept ;
+    skos:prefLabel "Service"@en .
+
+
+# --- Services ---
 
 <https://eden-fidelis.eu/example/registry/service_1>
     rdf:type       dcat:DataService ;
+    dct:type       <https://eden-fidelis.eu/example/registry/type/Repository> ;
     rdfs:label     "DANS Data Vault Catalog"@en ;
     dct:title      "DANS Data Vault Catalog"@en ; # mandatory
     dcat:endpointURL  <https://catalog.vault.datastations.nl> ; # mandatory
@@ -28,6 +41,7 @@ PREFIX sio:   <http://semanticscience.org/resource/>
     
 <https://eden-fidelis.eu/example/registry/service_2>
     rdf:type       dcat:DataService ;
+    dct:type       <https://eden-fidelis.eu/example/registry/type/Repository> ;
     rdfs:label     "DANS Data Station Social Sciences and Humanities"@en ;
     dct:title      "DANS Data Station Social Sciences and Humanities"@en ; # mandatory
     dcat:endpointURL  <https://ssh.datastations.nl/api/> ; # mandatory
@@ -40,6 +54,7 @@ PREFIX sio:   <http://semanticscience.org/resource/>
 
 <https://eden-fidelis.eu/example/registry/service_3>
     rdf:type       dcat:DataService ;
+    dct:type       <https://eden-fidelis.eu/example/registry/type/Service> ;
     rdfs:label     "DANS Data SWORD2 interface for Data Station Social Sciences and Humanities"@en ;
     dct:title       "DANS Data SWORD2 interface for Data Station Social Sciences and Humanities"@en ; 
     dcat:endpointURL  <https://sword2.ssh.datastations.nl> ; # mandatory
@@ -67,6 +82,7 @@ PREFIX sio:   <http://semanticscience.org/resource/>
 # 3. DATA SERVICE (Tool) with CPP links
 <https://eden-fidelis.eu/example/registry/service_4>
     rdf:type          dcat:DataService ;
+    dct:type          <https://eden-fidelis.eu/example/registry/type/Service> ;
     rdfs:label        "File Validation Service (DPS-FI)"@en ;
     dct:title         "File Validation Service for Finnish National Digital Preservation Services"@en ;
     dct:description   """You can validate your files against the National Digital Preservation Services (DPS) in Finland using this online service. The service displays the validity and support in the DPS for the files being validated."""@en ;

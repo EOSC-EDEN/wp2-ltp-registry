@@ -44,6 +44,7 @@ SELECT DISTINCT ?service ?prop ?propLabel ?val ?valLabel
     BIND(CONCAT(UCASE(SUBSTR(?propLabelSpaced, 1, 1)), SUBSTR(?propLabelSpaced, 2)) AS ?propLabel)
 
     # --- Value and Link Generation ---
+    OPTIONAL { ?objectVal skos:prefLabel ?valSkosLabel . }
     OPTIONAL { ?objectVal rdfs:label ?valRdfsLabel . }
     OPTIONAL { ?objectVal dct:title ?valDctTitle . }
     OPTIONAL { ?objectVal foaf:name ?valFoafName . }
@@ -62,6 +63,7 @@ SELECT DISTINCT ?service ?prop ?propLabel ?val ?valLabel
                CONCAT(?valRdfsLabel, ": ", ?valDctTitle), 
                ?valRdfsLabel
             ),
+            ?valSkosLabel,
             ?valFoafName,
             ?valVcardFn,
             IF(isURI(?objectVal), REPLACE(STR(?objectVal), "^.*[/#]([^/#]+)$", "$1"), STR(?objectVal))
