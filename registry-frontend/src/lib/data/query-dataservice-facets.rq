@@ -13,7 +13,7 @@ PREFIX obo:   <http://purl.obolibrary.org/obo/>
 
 # Query to get all filterable facets for DataServices
 # This includes:
-# 1. Direct properties of DataServices (theme, keyword, etc.)
+# 1. Direct properties of DataServices (theme, type, etc.)
 # 2. Related Organizations (via publisher, creator, etc.)
 # 3. Related Contact Points (vcard:Kind)
 
@@ -29,7 +29,7 @@ SELECT
         ?service a dcat:DataService;
                 ?prop ?val .
 
-        # Filter out content properties - only keep filter-worthy properties
+        # Filter out properties we don't want in the facet menu
         FILTER(
             ?prop != rdf:type &&
             ?prop != rdfs:label &&
@@ -43,7 +43,8 @@ SELECT
         # Try to get explicit rdfs:label for property
         OPTIONAL { ?prop rdfs:label ?propLabelRaw . }
 
-        # Try to get explicit label for value (SKOS first, then generic)
+        # Try to get explicit label for value
+        # Note: dct:type values (Classes) usually have rdfs:label, not skos:prefLabel
         OPTIONAL { ?val skos:prefLabel ?valSkosLabel . }
         OPTIONAL { ?val rdfs:label ?valLabelRaw . }
         OPTIONAL { ?val foaf:name ?valNameRaw . }
@@ -56,14 +57,15 @@ SELECT
         BIND(REPLACE(?propLabelNoHyphens, "([a-z])([A-Z])", "$1 $2") AS ?propLabelSpaced)
         BIND(CONCAT(UCASE(SUBSTR(?propLabelSpaced, 1, 1)), SUBSTR(?propLabelSpaced, 2)) AS ?propLabel)
 
-        # For value: use skos:prefLabel, then foaf:name, vcard:fn, then rdfs:label, then fallback
+        # For value: priority to specific labels, fallback to URI processing
         BIND(COALESCE(?valSkosLabel, ?valNameRaw, ?valFnRaw, ?valLabelRaw,
                       IF(isURI(?val), REPLACE(STR(?val), "^.*[/#]([^/#]+)$", "$1"), STR(?val)))
              AS ?valLabelRaw2)
 
-        # Format: replace hyphens with spaces, capitalize first letter
+        # Format: replace hyphens with spaces, split CamelCase (e.g. DataService -> Data Service), capitalize
         BIND(REPLACE(?valLabelRaw2, "-", " ") AS ?valLabelNoHyphens2)
-        BIND(CONCAT(UCASE(SUBSTR(?valLabelNoHyphens2, 1, 1)), SUBSTR(?valLabelNoHyphens2, 2)) AS ?valLabel)
+        BIND(REPLACE(?valLabelNoHyphens2, "([a-z])([A-Z])", "$1 $2") AS ?valLabelSpaced2)
+        BIND(CONCAT(UCASE(SUBSTR(?valLabelSpaced2, 1, 1)), SUBSTR(?valLabelSpaced2, 2)) AS ?valLabel)
     }
     UNION
     {

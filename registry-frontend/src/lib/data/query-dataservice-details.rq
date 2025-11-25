@@ -12,7 +12,6 @@ PREFIX geon:  <http://www.geonames.org/ontology#>
 PREFIX obo:   <http://purl.obolibrary.org/obo/>
 
 # Query to fetch all properties of a DataService with their labels
-# Returns: service, prop (property URI), propLabel, val (value), valLabel
 
 SELECT DISTINCT ?service ?prop ?propLabel ?val ?valLabel
 {
@@ -57,6 +56,7 @@ SELECT DISTINCT ?service ?prop ?propLabel ?val ?valLabel
     AS ?val)
 
     # For CPPs, the display text (`?valLabel`) is combined; for others, it's the standard label.
+    # Fallback logic handles CamelCase URI fragments (e.g. DataService -> Data Service)
     BIND(
         COALESCE(
             IF(?prop = obo:BFO_0000067 && BOUND(?valRdfsLabel) && BOUND(?valDctTitle), 
@@ -66,7 +66,10 @@ SELECT DISTINCT ?service ?prop ?propLabel ?val ?valLabel
             ?valSkosLabel,
             ?valFoafName,
             ?valVcardFn,
-            IF(isURI(?objectVal), REPLACE(STR(?objectVal), "^.*[/#]([^/#]+)$", "$1"), STR(?objectVal))
+            IF(isURI(?objectVal), 
+               REPLACE(REPLACE(REPLACE(STR(?objectVal), "^.*[/#]([^/#]+)$", "$1"), "-", " "), "([a-z])([A-Z])", "$1 $2"),
+               STR(?objectVal)
+            )
         ) 
     AS ?valLabel)
 
