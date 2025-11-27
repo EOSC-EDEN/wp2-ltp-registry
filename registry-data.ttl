@@ -13,36 +13,52 @@ PREFIX cpp:   <https://eden-fidelis.eu/example/cpp/>
 PREFIX obo:   <http://purl.obolibrary.org/obo/>
 PREFIX sio:   <http://semanticscience.org/resource/>
 
+# --- Standardized Type Labels ---
+# Provide labels for the DCAT classes here so the frontend 
+# displays "Catalog" and "Data Service" in the filters.
+
+dcat:Catalog a rdfs:Class ;
+    rdfs:label "Catalog"@en .
+
+dcat:DataService a rdfs:Class ;
+    rdfs:label "Data Service"@en .
+
+
+# --- Services ---
 
 <https://eden-fidelis.eu/example/registry/service_1>
     rdf:type       dcat:DataService ;
+    # DANS Data Vault Catalog -> Catalog (Repository)
+    dct:type       dcat:Catalog ;
     rdfs:label     "DANS Data Vault Catalog"@en ;
-    dct:title      "DANS Data Vault Catalog"@en ; # mandatory
-    dcat:endpointURL  <https://catalog.vault.datastations.nl> ; # mandatory
+    dct:title      "DANS Data Vault Catalog"@en ; 
+    dcat:endpointURL  <https://catalog.vault.datastations.nl> ; 
     dcat:contactPoint <https://eden-fidelis.eu/example/registry/contact_1> ;
-    # dcat:endpointDescription ""; # recommended
-    dct:description "A safe and sustainable long-term preservation archive that meets the highest archiving requirements. The DANS Data Vault contains all datasets that have been entrusted to DANS, including the data from the Data Stations and DataverseNL."@en ; # recommended
+    dct:description "A safe and sustainable long-term preservation archive that meets the highest archiving requirements. The DANS Data Vault contains all datasets that have been entrusted to DANS, including the data from the Data Stations and DataverseNL."@en ; 
     dcat:landingPage <https://catalog.vault.datastations.nl> ;  
     dct:publisher <https://eden-fidelis.eu/example/registry/org_1> ;
-    foaf:page <https://dans-knaw.github.io/dans-datastation-architecture/vaas/> . # documentation
+    foaf:page <https://dans-knaw.github.io/dans-datastation-architecture/vaas/> . 
     
 <https://eden-fidelis.eu/example/registry/service_2>
     rdf:type       dcat:DataService ;
+    # DANS Data Station SSH -> Catalog (Repository)
+    dct:type       dcat:Catalog ;
     rdfs:label     "DANS Data Station Social Sciences and Humanities"@en ;
-    dct:title      "DANS Data Station Social Sciences and Humanities"@en ; # mandatory
-    dcat:endpointURL  <https://ssh.datastations.nl/api/> ; # mandatory
+    dct:title      "DANS Data Station Social Sciences and Humanities"@en ; 
+    dcat:endpointURL  <https://ssh.datastations.nl/api/> ; 
     dcat:contactPoint <https://eden-fidelis.eu/example/registry/contact_1> ;
-    # dcat:endpointDescription ""; # recommended
-    dct:description "This data station allows you to deposit and search for data within the social sciences and humanities. The metadata of our Data Station SSH is also available in the national ODISSEI portal and the European CESSDA Data Catalogue."@en ; # recommended
+    dct:description "This data station allows you to deposit and search for data within the social sciences and humanities. The metadata of our Data Station SSH is also available in the national ODISSEI portal and the European CESSDA Data Catalogue."@en ; 
     dcat:landingPage <https://ssh.datastations.nl/> ;  
     dct:publisher <https://eden-fidelis.eu/example/registry/org_1> ;
     foaf:page <https://dans-knaw.github.io/dans-datastation-architecture/>, <https://support.datastations.nl/en/support/solutions/folders/80000692438> .  
 
 <https://eden-fidelis.eu/example/registry/service_3>
     rdf:type       dcat:DataService ;
+    # SWORD2 Interface -> Data Service (Tool/API)
+    dct:type       dcat:DataService ;
     rdfs:label     "DANS Data SWORD2 interface for Data Station Social Sciences and Humanities"@en ;
     dct:title       "DANS Data SWORD2 interface for Data Station Social Sciences and Humanities"@en ; 
-    dcat:endpointURL  <https://sword2.ssh.datastations.nl> ; # mandatory
+    dcat:endpointURL  <https://sword2.ssh.datastations.nl> ; 
     dcat:contactPoint <https://eden-fidelis.eu/example/registry/contact_1> ;
     dct:description "SWORD2 client that deposits datasets to the DANS Data Station Social Sciences and Humanities"@en ; 
     dct:publisher <https://eden-fidelis.eu/example/registry/org_1> ;
@@ -67,15 +83,17 @@ PREFIX sio:   <http://semanticscience.org/resource/>
 # 3. DATA SERVICE (Tool) with CPP links
 <https://eden-fidelis.eu/example/registry/service_4>
     rdf:type          dcat:DataService ;
+    # File Validation -> Data Service (Tool/API)
+    dct:type          dcat:DataService ;
     rdfs:label        "File Validation Service (DPS-FI)"@en ;
     dct:title         "File Validation Service for Finnish National Digital Preservation Services"@en ;
     dct:description   """You can validate your files against the National Digital Preservation Services (DPS) in Finland using this online service. The service displays the validity and support in the DPS for the files being validated."""@en ;
     dcat:endpointURL  <https://validation.digitalpreservation.fi/#/en> ;
     dcat:landingPage  <https://digitalpreservation.fi/> ;
-    dct:publisher     <https://eden-fidelis.eu/example/registry/org_2> ; # Link to the CSC organization
-    dcat:contactPoint <https://eden-fidelis.eu/example/registry/contact_2> ; # Link to the CSC contact
-    foaf:page         <https://github.com/Digital-Preservation-Finland/file-scraper> ; # Link to documentation/source code
-    obo:BFO_0000067   cpp:010 . # Link to CPP using "contains process" property
+    dct:publisher     <https://eden-fidelis.eu/example/registry/org_2> ; 
+    dcat:contactPoint <https://eden-fidelis.eu/example/registry/contact_2> ; 
+    foaf:page         <https://github.com/Digital-Preservation-Finland/file-scraper> ; 
+    obo:BFO_0000067   cpp:010 . 
 
 # --- DANS ENTRIES ---
 

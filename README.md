@@ -163,3 +163,10 @@ run the Fuseki container, with an in-memory, updatable dataset at http://localho
 # FOOTNOTES
 
 - [^1]: More on Vcard in DCAT-AP: https://interoperable-europe.ec.europa.eu/collection/semic-support-centre/solution/dcat-application-profile-implementation-guidelines/release-0
+
+# Utilities
+
+```bash
+# Output tree structure of project
+tree -I 'node_modules|venv' > tree.txt
+```
