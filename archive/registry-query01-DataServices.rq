@@ -1,5 +1,5 @@
 # archived_from:
-# registry-frontend/src/lib/data/query-contacts.rq
+# registry-query01-DataServices.rq
 
 PREFIX adms:  <http://www.w3.org/ns/adms#>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>

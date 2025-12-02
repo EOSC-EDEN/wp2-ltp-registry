@@ -2,7 +2,7 @@
 # registry-frontend/README.md
 ```
 
-# EDEN Registry Catalog - Proof of Concept
+# Setup instructions
 
 ## Prerequisites
 
@@ -77,7 +77,7 @@ UI renders Service Cards + Filter Sidebar
 
 ## Project Structure
 
-```
+```bash
 src/
 ├── lib/
 │ ├── components/  # UI components (Visual Layer)
