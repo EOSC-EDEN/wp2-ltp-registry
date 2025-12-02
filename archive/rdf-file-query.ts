@@ -1,3 +1,8 @@
+/* 
+archived_from:
+registry-frontend/src/lib/server/rdf-file-query.ts
+*/
+
 import { QueryEngine } from '@comunica/query-sparql-file';
 import { readFile } from 'fs/promises';
 import { join } from 'path';

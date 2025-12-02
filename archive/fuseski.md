@@ -1,4 +1,9 @@
-# registry-frontend/fuseski/README.md
+# fuseki.md
+
+```txt
+# archived from
+# registry-frontend/fuseki/README.md
+```
 
 ## Fuseki Docker Setup
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+# archived_from:
 # registry-frontend/load-fuseski-data.sh
 # Script to load RDF data into Fuseki via HTTP API
 # Run this from the catalog-mock directory with Fuseki running

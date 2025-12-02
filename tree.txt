@@ -1,17 +1,20 @@
 .
-├── docs
-│   ├── registry.png
-│   └── registry-schema.png
-├── LICENSE
-├── PoC-LTP-Services-Registry.md
-├── README.md
-├── registry-data.ttl
-├── registry-frontend
+├── archive
 │   ├── docker-compose.yml
-│   ├── eslint.config.js
-│   ├── fuseki
-│   │   └── README.md
+│   ├── fuseski.md
 │   ├── load-fuseki-data.sh
+│   ├── query01-dataservices.rq
+│   ├── query02-contacts.rq
+│   ├── query03-organizations.rq
+│   ├── query-dataservice-details.rq
+│   ├── query-dataservice-facets.rq
+│   ├── rdf-endpoint-query.ts
+│   ├── rdf-file-query.ts
+│   └── registry-data.ttl
+├── LICENSE
+├── README.md
+├── registry-frontend
+│   ├── eslint.config.js
 │   ├── package.json
 │   ├── pnpm-lock.yaml
 │   ├── pnpm-workspace.yaml
@@ -46,14 +49,18 @@
 │   │   │   ├── context
 │   │   │   │   └── catalog-context.svelte.ts
 │   │   │   ├── index.ts
-│   │   │   └── server
-│   │   │       ├── rdf-endpoint-query.ts
-│   │   │       └── rdf-file-query.ts
+│   │   │   ├── server
+│   │   │   │   └── registry-service.ts
+│   │   │   ├── types
+│   │   │   │   └── registry.ts
+│   │   │   └── utils
+│   │   │       └── adapter.ts
 │   │   └── routes
 │   │       ├── +layout.svelte
 │   │       ├── +page.server.ts
 │   │       └── +page.svelte
 │   ├── static
+│   │   ├── registry-data.json
 │   │   └── robots.txt
 │   ├── svelte.config.js
 │   ├── tsconfig.json
@@ -66,4 +73,4 @@
 ├── requirements.txt
 └── tree.txt
 
-14 directories, 52 files
+15 directories, 58 files
