@@ -25,7 +25,9 @@
     "countryName": "vcard:country-name",
     "fn": "vcard:fn",
     "email": { "@id": "vcard:hasEmail", "@type": "@id" },
-    "hasURL": { "@id": "vcard:hasURL", "@type": "@id" }
+    "hasURL": { "@id": "vcard:hasURL", "@type": "@id" },
+    "hasService": { "@id": "dcat:service", "@type": "@id" },
+    "inCatalog": { "@id": "dcat:inCatalog", "@type": "@id" }
   },
   "@graph": [
     {
@@ -69,6 +71,12 @@
         "name": "Data Archiving Networked Services (DANS)",
         "countryName": "The Netherlands"
       },
+      "hasService": [
+        {
+          "id": "https://eden-fidelis.eu/example/registry/service_3",
+          "title": "SWORD2 Interface for SSH"
+        }
+      ],
       "contactPoint": [
         {
           "id": "https://eden-fidelis.eu/example/registry/contact_1",
@@ -91,6 +99,10 @@
         "type": "org:Organization",
         "name": "Data Archiving Networked Services (DANS)",
         "countryName": "The Netherlands"
+      },
+      "inCatalog": {
+        "id": "https://eden-fidelis.eu/example/registry/service_2",
+        "title": "DANS Data Station Social Sciences and Humanities"
       },
       "contactPoint": [
         {

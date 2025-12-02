@@ -13,14 +13,13 @@ async function getServices(): Promise<DataService[]> {
 
 	const graph = json['@graph'] as any[];
 
-	// Filter: Only return DataServices or Catalogs (Exclude pure CPP definitions)
 	cachedData = graph.filter(item => {
+		if (!item.type) return false;
 		const type = Array.isArray(item.type) ? item.type : [item.type];
 		return type.some((t: string) => 
 			t === 'dcat:DataService' || 
 			t === 'dcat:Catalog' || 
-			// Handle expanded URIs if necessary, but context usually compacts them
-			t.includes('DataService') || t.includes('Catalog')
+			(t && (t.includes('DataService') || t.includes('Catalog')))
 		);
 	}) as DataService[];
 
@@ -46,7 +45,6 @@ export async function searchRegistry(filters: Map<string, string[]>): Promise<Se
 		return val.replace(/^.*[:/]([^:/]+)$/, '$1').replace(/([A-Z])/g, ' $1').trim();
 	};
 
-	// 1. Filter
 	const filteredServices = allServices.filter((service) => {
 		if (filters.size === 0) return true;
 
@@ -68,7 +66,6 @@ export async function searchRegistry(filters: Map<string, string[]>): Promise<Se
 				if (allowedValues.some(v => contacts.includes(v))) match = true;
 			} else if (key === 'Contains Process') {
 				if (service.containsProcess) {
-					// Check against full label "CPP-010: Title"
 					const cppLabels = service.containsProcess.map(c => 
 						c.label ? `${c.label}: ${c.title}` : c.title
 					);
@@ -81,7 +78,6 @@ export async function searchRegistry(filters: Map<string, string[]>): Promise<Se
 		return true;
 	});
 
-	// 2. Aggregate
 	const facets: Record<string, FacetCount[]> = {
 		'Contains Process': [],
 		'Publisher': [],
@@ -108,7 +104,6 @@ export async function searchRegistry(filters: Map<string, string[]>): Promise<Se
 	facets['Type'] = aggregate((s) => normalizeType(s.type));
 	facets['Contact Point'] = aggregate((s) => s.contactPoint?.map(c => c.fn));
 
-	// Custom aggregation for CPPs to match "CPP-010: Title" format
 	const cppCounts = new Map<string, number>();
 	filteredServices.forEach((s) => {
 		s.containsProcess?.forEach((cpp) => {

@@ -16,14 +16,14 @@ export interface Contact extends RegistryEntity {
 
 export interface Cpp extends RegistryEntity {
 	title: string;
-	label?: string; // e.g. "CPP-010"
-	page?: string;  // Zenodo URL
+	label?: string;
+	page?: string;
 }
 
 export interface DataService extends RegistryEntity {
 	title: string;
 	description?: string;
-	endpointURL: string;
+	endpointURL?: string;
 	landingPage?: string;
 	documentation?: string | string[];
 	publisher?: Organization;
@@ -31,4 +31,6 @@ export interface DataService extends RegistryEntity {
 	containsProcess?: Cpp[];
 	theme?: string[];
 	keyword?: string[];
+	hasService?: DataService[];
+	inCatalog?: DataService;
 }
