@@ -1,3 +1,4 @@
+<!-- CatalogHeader.svelte -->
 <script lang="ts">
 	import FilterIcon from '../icons/FilterIcon.svelte';
 

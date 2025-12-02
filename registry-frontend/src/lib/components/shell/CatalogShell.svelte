@@ -1,3 +1,4 @@
+<!-- CatalogShell.svelte -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import MobileFilters from './MobileFilters.svelte';

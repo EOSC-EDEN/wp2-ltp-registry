@@ -1,3 +1,4 @@
+<!-- MobileFilters.svelte -->
 <script lang="ts">
 	import CloseIcon from '../icons/CloseIcon.svelte';
 	import FilterSection from './FilterSection.svelte';
