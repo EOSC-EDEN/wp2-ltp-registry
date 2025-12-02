@@ -30,6 +30,12 @@ export interface SearchResult {
 export async function searchRegistry(filters: Map<string, string[]>): Promise<SearchResult> {
 	const allServices = await getServices();
 
+	// Helper to normalize types for comparison (e.g. "dcat:DataService" -> "Data Service")
+	const normalizeType = (uri: string | string[]) => {
+		const val = Array.isArray(uri) ? uri[0] : uri;
+		return val.replace(/^.*[:/]([^:/]+)$/, '$1').replace(/([A-Z])/g, ' $1').trim();
+	};
+
 	// 1. Filter Services based on nested document properties
 	const filteredServices = allServices.filter((service) => {
 		if (filters.size === 0) return true;
@@ -46,8 +52,13 @@ export async function searchRegistry(filters: Map<string, string[]>): Promise<Se
 			} else if (key === 'Country') {
 				const val = service.publisher?.countryName;
 				if (val && allowedValues.includes(val)) match = true;
+			} else if (key === 'Type') {
+				const typeLabel = normalizeType(service.type);
+				if (allowedValues.includes(typeLabel)) match = true;
+			} else if (key === 'Contact Point') {
+				const contacts = service.contactPoint?.map(c => c.fn) || [];
+				if (allowedValues.some(v => contacts.includes(v))) match = true;
 			} else if (key === 'Contains Process') {
-				// Check array of nested CPP objects
 				if (service.containsProcess) {
 					const titles = service.containsProcess.map((c) => c.title);
 					if (allowedValues.some((v) => titles.includes(v))) match = true;
@@ -61,17 +72,25 @@ export async function searchRegistry(filters: Map<string, string[]>): Promise<Se
 
 	// 2. Calculate Facets (Aggregation)
 	const facets: Record<string, FacetCount[]> = {
-		Publisher: [],
-		Country: [],
-		'Contains Process': []
+		'Contains Process': [],
+		'Publisher': [],
+		'Type': [],
+		'Contact Point': [],
+		'Country': [],
+		// 'Page': [] // Uncomment if you really want to filter by URL, usually too noisy
 	};
 
 	// Helper to aggregate counts
-	const aggregate = (extractor: (s: DataService) => string | undefined) => {
+	const aggregate = (extractor: (s: DataService) => string | string[] | undefined) => {
 		const counts = new Map<string, number>();
 		filteredServices.forEach((s) => {
-			const val = extractor(s);
-			if (val) counts.set(val, (counts.get(val) || 0) + 1);
+			const rawVal = extractor(s);
+			if (!rawVal) return;
+			const values = Array.isArray(rawVal) ? rawVal : [rawVal];
+			
+			values.forEach(val => {
+				counts.set(val, (counts.get(val) || 0) + 1);
+			});
 		});
 		return Array.from(counts.entries())
 			.map(([val, count]) => ({
@@ -84,6 +103,9 @@ export async function searchRegistry(filters: Map<string, string[]>): Promise<Se
 
 	facets['Publisher'] = aggregate((s) => s.publisher?.name);
 	facets['Country'] = aggregate((s) => s.publisher?.countryName);
+	facets['Type'] = aggregate((s) => normalizeType(s.type));
+	facets['Contact Point'] = aggregate((s) => s.contactPoint?.map(c => c.fn));
+	// facets['Page'] = aggregate((s) => s.documentation); // Optional: Re-enable if needed
 
 	// Custom aggregation for CPPs (Array)
 	const cppCounts = new Map<string, number>();

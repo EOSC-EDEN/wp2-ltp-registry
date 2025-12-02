@@ -36,16 +36,26 @@ export function adaptServiceToProperties(service: DataService): ServiceWithPrope
 		}
 	}
 
-	// 2. Contact Point
+	// 2. Type (New)
+	if (service.type) {
+		const typeStr = Array.isArray(service.type) ? service.type[0] : service.type;
+		// Clean "dcat:DataService" to "Data Service"
+		const displayType = typeStr.replace(/^.*[:/]([^:/]+)$/, '$1').replace(/([A-Z])/g, ' $1').trim();
+		addProp('Type', displayType, 'rdf:type');
+	}
+
+	// 3. Contact Point
 	if (service.contactPoint && service.contactPoint.length > 0) {
 		const contact = service.contactPoint[0];
 		addProp('Contact Point', contact.fn, 'dcat:contactPoint');
 		if (contact.email) {
-			addProp('Email', contact.email, 'vcard:hasEmail');
+			// Clean mailto: for display
+			const emailDisplay = contact.email.replace('mailto:', '');
+			addProp('Email', contact.email, 'vcard:hasEmail', emailDisplay);
 		}
 	}
 
-	// 3. URLs
+	// 4. URLs
 	if (service.endpointURL) {
 		addProp('Endpoint', service.endpointURL, 'dcat:endpointURL', service.endpointURL);
 	}
@@ -61,7 +71,7 @@ export function adaptServiceToProperties(service: DataService): ServiceWithPrope
 		});
 	}
 
-	// 4. CPPs
+	// 5. CPPs
 	if (service.containsProcess) {
 		service.containsProcess.forEach(cpp => {
 			// Special handling: Value is URI, Label is Title
