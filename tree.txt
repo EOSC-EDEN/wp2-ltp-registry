@@ -11,9 +11,11 @@
 │   ├── rdf-endpoint-query.ts
 │   ├── rdf-file-query.ts
 │   ├── registry-data.ttl
+│   ├── registry.png
 │   ├── registry-query01-DataServices.rq
 │   ├── registry-query02-Contact.rq
-│   └── registry-query03-Orgs.rq
+│   ├── registry-query03-Orgs.rq
+│   └── registry-schema.png
 ├── LICENSE
 ├── README.md
 ├── registry-frontend
@@ -73,4 +75,4 @@
 ├── requirements.txt
 └── tree.txt
 
-15 directories, 58 files
+15 directories, 60 files

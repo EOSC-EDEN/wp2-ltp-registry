@@ -63,3 +63,10 @@ pip install -r requirements.txt
 # Generate diagrams
 gen-erdiagram --format mermaid registry-schema.yaml -c DataService
 ```
+
+## Utilities
+
+```bash
+# Tree output
+tree -I "venv|.git|data|*.pyc|node_modules" > tree.txt
+```
