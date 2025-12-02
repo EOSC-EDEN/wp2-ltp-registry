@@ -6,14 +6,15 @@
     "foaf": "http://xmlns.com/foaf/0.1/",
     "vcard": "http://www.w3.org/2006/vcard/ns#",
     "org": "http://www.w3.org/ns/org#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
     "cpp": "https://eden-fidelis.eu/example/cpp/",
     "obo": "http://purl.obolibrary.org/obo/",
     "sio": "http://semanticscience.org/resource/",
     "id": "@id",
     "type": "@type",
-    "title": "dct:title",
+    "title": "skos:prefLabel",
+    "label": "skos:notation",
     "description": "dct:description",
-    "label": "http://www.w3.org/2000/01/rdf-schema#label",
     "publisher": { "@id": "dct:publisher", "@type": "@id" },
     "contactPoint": { "@id": "dcat:contactPoint", "@type": "@id" },
     "endpointURL": { "@id": "dcat:endpointURL", "@type": "@id" },
@@ -21,33 +22,35 @@
     "documentation": { "@id": "foaf:page", "@type": "@id" },
     "page": { "@id": "foaf:page", "@type": "@id" },
     "containsProcess": { "@id": "obo:BFO_0000067", "@type": "@id" },
+    "hasService": { "@id": "dcat:service", "@type": "@id" },
+    "inCatalog": { "@id": "dcat:inCatalog", "@type": "@id" },
+    "inScheme": { "@id": "skos:inScheme", "@type": "@id" },
+    "topConceptOf": { "@id": "skos:topConceptOf", "@type": "@id" },
     "name": "foaf:name",
     "countryName": "vcard:country-name",
     "fn": "vcard:fn",
     "email": { "@id": "vcard:hasEmail", "@type": "@id" },
-    "hasURL": { "@id": "vcard:hasURL", "@type": "@id" },
-    "hasService": { "@id": "dcat:service", "@type": "@id" },
-    "inCatalog": { "@id": "dcat:inCatalog", "@type": "@id" }
+    "hasURL": { "@id": "vcard:hasURL", "@type": "@id" }
   },
   "@graph": [
     {
-      "id": "https://eden-fidelis.eu/example/registry/service_1",
-      "type": "dcat:Catalog",
+      "@id": "https://eden-fidelis.eu/example/registry/service_1",
+      "@type": "dcat:Catalog",
       "title": "DANS Data Vault Catalog",
-      "description": "A safe and sustainable long-term preservation archive that meets the highest archiving requirements. The DANS Data Vault contains all datasets that have been entrusted to DANS, including the data from the Data Stations and DataverseNL.",
+      "description": "A safe and sustainable long-term preservation archive that meets the highest archiving requirements.",
       "endpointURL": "https://catalog.vault.datastations.nl",
       "landingPage": "https://catalog.vault.datastations.nl",
       "documentation": "https://dans-knaw.github.io/dans-datastation-architecture/vaas/",
       "publisher": {
-        "id": "https://eden-fidelis.eu/example/registry/org_1",
-        "type": "org:Organization",
+        "@id": "https://eden-fidelis.eu/example/registry/org_1",
+        "@type": ["org:Organization", "foaf:Agent"],
         "name": "Data Archiving Networked Services (DANS)",
         "countryName": "The Netherlands"
       },
       "contactPoint": [
         {
-          "id": "https://eden-fidelis.eu/example/registry/contact_1",
-          "type": "vcard:Kind",
+          "@id": "https://eden-fidelis.eu/example/registry/contact_1",
+          "@type": "vcard:Kind",
           "fn": "Data Archiving Networked Services (DANS)",
           "email": "mailto:info@dans.knaw.nl",
           "hasURL": "https://dans.knaw.nl/"
@@ -55,10 +58,10 @@
       ]
     },
     {
-      "id": "https://eden-fidelis.eu/example/registry/service_2",
-      "type": "dcat:Catalog",
+      "@id": "https://eden-fidelis.eu/example/registry/service_2",
+      "@type": "dcat:Catalog",
       "title": "DANS Data Station Social Sciences and Humanities",
-      "description": "This data station allows you to deposit and search for data within the social sciences and humanities. The metadata of our Data Station SSH is also available in the national ODISSEI portal and the European CESSDA Data Catalogue.",
+      "description": "This data station allows you to deposit and search for data within the social sciences and humanities.",
       "endpointURL": "https://ssh.datastations.nl/api/",
       "landingPage": "https://ssh.datastations.nl/",
       "documentation": [
@@ -66,21 +69,21 @@
         "https://support.datastations.nl/en/support/solutions/folders/80000692438"
       ],
       "publisher": {
-        "id": "https://eden-fidelis.eu/example/registry/org_1",
-        "type": "org:Organization",
+        "@id": "https://eden-fidelis.eu/example/registry/org_1",
+        "@type": ["org:Organization", "foaf:Agent"],
         "name": "Data Archiving Networked Services (DANS)",
         "countryName": "The Netherlands"
       },
       "hasService": [
         {
-          "id": "https://eden-fidelis.eu/example/registry/service_3",
+          "@id": "https://eden-fidelis.eu/example/registry/service_3",
           "title": "SWORD2 Interface for SSH"
         }
       ],
       "contactPoint": [
         {
-          "id": "https://eden-fidelis.eu/example/registry/contact_1",
-          "type": "vcard:Kind",
+          "@id": "https://eden-fidelis.eu/example/registry/contact_1",
+          "@type": "vcard:Kind",
           "fn": "Data Archiving Networked Services (DANS)",
           "email": "mailto:info@dans.knaw.nl",
           "hasURL": "https://dans.knaw.nl/"
@@ -88,26 +91,26 @@
       ]
     },
     {
-      "id": "https://eden-fidelis.eu/example/registry/service_3",
-      "type": "dcat:DataService",
+      "@id": "https://eden-fidelis.eu/example/registry/service_3",
+      "@type": "dcat:DataService",
       "title": "DANS Data SWORD2 interface for Data Station Social Sciences and Humanities",
       "description": "SWORD2 client that deposits datasets to the DANS Data Station Social Sciences and Humanities",
       "endpointURL": "https://sword2.ssh.datastations.nl",
       "documentation": "https://dans-knaw.github.io/dd-dans-sword2-examples/",
       "publisher": {
-        "id": "https://eden-fidelis.eu/example/registry/org_1",
-        "type": "org:Organization",
+        "@id": "https://eden-fidelis.eu/example/registry/org_1",
+        "@type": ["org:Organization", "foaf:Agent"],
         "name": "Data Archiving Networked Services (DANS)",
         "countryName": "The Netherlands"
       },
       "inCatalog": {
-        "id": "https://eden-fidelis.eu/example/registry/service_2",
+        "@id": "https://eden-fidelis.eu/example/registry/service_2",
         "title": "DANS Data Station Social Sciences and Humanities"
       },
       "contactPoint": [
         {
-          "id": "https://eden-fidelis.eu/example/registry/contact_1",
-          "type": "vcard:Kind",
+          "@id": "https://eden-fidelis.eu/example/registry/contact_1",
+          "@type": "vcard:Kind",
           "fn": "Data Archiving Networked Services (DANS)",
           "email": "mailto:info@dans.knaw.nl",
           "hasURL": "https://dans.knaw.nl/"
@@ -115,23 +118,23 @@
       ]
     },
     {
-      "id": "https://eden-fidelis.eu/example/registry/service_4",
-      "type": "dcat:DataService",
+      "@id": "https://eden-fidelis.eu/example/registry/service_4",
+      "@type": "dcat:DataService",
       "title": "File Validation Service for Finnish National Digital Preservation Services",
-      "description": "You can validate your files against the National Digital Preservation Services (DPS) in Finland using this online service. The service displays the validity and support in the DPS for the files being validated.",
+      "description": "You can validate your files against the National Digital Preservation Services (DPS) in Finland.",
       "endpointURL": "https://validation.digitalpreservation.fi/#/en",
       "landingPage": "https://digitalpreservation.fi/",
       "documentation": "https://github.com/Digital-Preservation-Finland/file-scraper",
       "publisher": {
-        "id": "https://eden-fidelis.eu/example/registry/org_2",
-        "type": "org:Organization",
+        "@id": "https://eden-fidelis.eu/example/registry/org_2",
+        "@type": ["org:Organization", "foaf:Agent"],
         "name": "CSC – IT Center for Science Ltd.",
         "countryName": "Finland"
       },
       "contactPoint": [
         {
-          "id": "https://eden-fidelis.eu/example/registry/contact_2",
-          "type": "vcard:Kind",
+          "@id": "https://eden-fidelis.eu/example/registry/contact_2",
+          "@type": "vcard:Kind",
           "fn": "National Digital Preservation Services Support",
           "email": "mailto:pas-support@csc.fi",
           "hasURL": "https://digitalpreservation.fi/"
@@ -139,43 +142,49 @@
       ],
       "containsProcess": [
         {
-          "id": "https://eden-fidelis.eu/example/cpp/010",
-          "type": "sio:SIO_000006",
+          "@id": "https://eden-fidelis.eu/example/cpp/010",
+          "@type": "skos:Concept",
           "label": "CPP-010",
           "title": "File Format Validation",
           "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-010_File_Format_Validation.pdf"
         }
       ]
     },
-    { "id": "cpp:001", "type": "sio:SIO_000006", "label": "CPP-001", "title": "Checksum Generation and Recording", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-001_Checksum_Generation_and_Recording.pdf" },
-    { "id": "cpp:002", "type": "sio:SIO_000006", "label": "CPP-002", "title": "Checksum Validation", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-002_Checksum_Validation.pdf" },
-    { "id": "cpp:003", "type": "sio:SIO_000006", "label": "CPP-003", "title": "Integrity Checking", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-003_Integrity_Checking.pdf" },
-    { "id": "cpp:004", "type": "sio:SIO_000006", "label": "CPP-004", "title": "Data Corruption Management", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-004_Data_Corruption_Management.pdf" },
-    { "id": "cpp:005", "type": "sio:SIO_000006", "label": "CPP-005", "title": "Identifier Management", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-005_Identifier_Management.pdf" },
-    { "id": "cpp:006", "type": "sio:SIO_000006", "label": "CPP-006", "title": "AIP Batch Export", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-006_AIP_Batch_Export.pdf" },
-    { "id": "cpp:007", "type": "sio:SIO_000006", "label": "CPP-007", "title": "Virus Scanning", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-007_Virus_Scanning.pdf" },
-    { "id": "cpp:008", "type": "sio:SIO_000006", "label": "CPP-008", "title": "File Format Identification", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-008_File_Format_Identification.pdf" },
-    { "id": "cpp:009", "type": "sio:SIO_000006", "label": "CPP-009", "title": "Metadata Extraction", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-009_Metadata_Extraction.pdf" },
-    { "id": "cpp:010", "type": "sio:SIO_000006", "label": "CPP-010", "title": "File Format Validation", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-010_File_Format_Validation.pdf" },
-    { "id": "cpp:011", "type": "sio:SIO_000006", "label": "CPP-011", "title": "Replication", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-011_Replication.pdf" },
-    { "id": "cpp:012", "type": "sio:SIO_000006", "label": "CPP-012", "title": "Risk Mitigation", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-012_Risk_Mitigation.pdf" },
-    { "id": "cpp:013", "type": "sio:SIO_000006", "label": "CPP-013", "title": "Object Management Reporting", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-013_Object_Management_Reporting.pdf" },
-    { "id": "cpp:014", "type": "sio:SIO_000006", "label": "CPP-014", "title": "File Migration", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-014_File_Migration.pdf" },
-    { "id": "cpp:015", "type": "sio:SIO_000006", "label": "CPP-015", "title": "Emulation and Rendering Tools", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-015_Emulation_and_Rendering_Tools.pdf" },
-    { "id": "cpp:016", "type": "sio:SIO_000006", "label": "CPP-016", "title": "Metadata Ingest and Management", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-016_Metadata_Ingest_and_Management.pdf" },
-    { "id": "cpp:017", "type": "sio:SIO_000006", "label": "CPP-017", "title": "Disposal", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-017_Disposal.pdf" },
-    { "id": "cpp:018", "type": "sio:SIO_000006", "label": "CPP-018", "title": "Community Watch", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-018_Community_Watch.pdf" },
-    { "id": "cpp:019", "type": "sio:SIO_000006", "label": "CPP-019", "title": "Data Quality Assessment", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-019_Data_Quality_Assessment.pdf" },
-    { "id": "cpp:020", "type": "sio:SIO_000006", "label": "CPP-020", "title": "Rights Management", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-020_Rights_Management.pdf" },
-    { "id": "cpp:021", "type": "sio:SIO_000006", "label": "CPP-021", "title": "AIP Versioning", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-021_AIP_Versioning.pdf" },
-    { "id": "cpp:022", "type": "sio:SIO_000006", "label": "CPP-022", "title": "Significant Properties Definition", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-022_Significant_Properties_Definition.pdf" },
-    { "id": "cpp:023", "type": "sio:SIO_000006", "label": "CPP-023", "title": "Risk Definition and Extraction", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-023_Risk_Definition_and_Extraction.pdf" },
-    { "id": "cpp:024", "type": "sio:SIO_000006", "label": "CPP-024", "title": "Enabling Discovery", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-024_Enabling_Discovery.pdf" },
-    { "id": "cpp:025", "type": "sio:SIO_000006", "label": "CPP-025", "title": "Enabling Access", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-025_Enabling_Access.pdf" },
-    { "id": "cpp:026", "type": "sio:SIO_000006", "label": "CPP-026", "title": "File Normalisation", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-026_File_Normalisation.pdf" },
-    { "id": "cpp:027", "type": "sio:SIO_000006", "label": "CPP-027", "title": "File Repair", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-027_File_Repair.pdf" },
-    { "id": "cpp:028", "type": "sio:SIO_000006", "label": "CPP-028", "title": "Creation of Derivatives", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-028_Creation_of_Derivatives.pdf" },
-    { "id": "cpp:029", "type": "sio:SIO_000006", "label": "CPP-029", "title": "Ingest", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-029_Ingest.pdf" },
-    { "id": "cpp:030", "type": "sio:SIO_000006", "label": "CPP-030", "title": "Refreshment", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-030_Refreshment.pdf" }
+    {
+      "@id": "https://eden-fidelis.eu/example/cpp/Scheme",
+      "@type": "skos:ConceptScheme",
+      "title": "Preservation Process Registry",
+      "description": "Controlled vocabulary of preservation processes (CPP)"
+    },
+    { "@id": "cpp:001", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-001", "title": "Checksum Generation and Recording", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-001_Checksum_Generation_and_Recording.pdf" },
+    { "@id": "cpp:002", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-002", "title": "Checksum Validation", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-002_Checksum_Validation.pdf" },
+    { "@id": "cpp:003", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-003", "title": "Integrity Checking", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-003_Integrity_Checking.pdf" },
+    { "@id": "cpp:004", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-004", "title": "Data Corruption Management", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-004_Data_Corruption_Management.pdf" },
+    { "@id": "cpp:005", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-005", "title": "Identifier Management", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-005_Identifier_Management.pdf" },
+    { "@id": "cpp:006", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-006", "title": "AIP Batch Export", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-006_AIP_Batch_Export.pdf" },
+    { "@id": "cpp:007", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-007", "title": "Virus Scanning", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-007_Virus_Scanning.pdf" },
+    { "@id": "cpp:008", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-008", "title": "File Format Identification", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-008_File_Format_Identification.pdf" },
+    { "@id": "cpp:009", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-009", "title": "Metadata Extraction", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-009_Metadata_Extraction.pdf" },
+    { "@id": "cpp:010", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-010", "title": "File Format Validation", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-010_File_Format_Validation.pdf" },
+    { "@id": "cpp:011", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-011", "title": "Replication", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-011_Replication.pdf" },
+    { "@id": "cpp:012", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-012", "title": "Risk Mitigation", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-012_Risk_Mitigation.pdf" },
+    { "@id": "cpp:013", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-013", "title": "Object Management Reporting", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-013_Object_Management_Reporting.pdf" },
+    { "@id": "cpp:014", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-014", "title": "File Migration", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-014_File_Migration.pdf" },
+    { "@id": "cpp:015", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-015", "title": "Emulation and Rendering Tools", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-015_Emulation_and_Rendering_Tools.pdf" },
+    { "@id": "cpp:016", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-016", "title": "Metadata Ingest and Management", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-016_Metadata_Ingest_and_Management.pdf" },
+    { "@id": "cpp:017", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-017", "title": "Disposal", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-017_Disposal.pdf" },
+    { "@id": "cpp:018", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-018", "title": "Community Watch", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-018_Community_Watch.pdf" },
+    { "@id": "cpp:019", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-019", "title": "Data Quality Assessment", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-019_Data_Quality_Assessment.pdf" },
+    { "@id": "cpp:020", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-020", "title": "Rights Management", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-020_Rights_Management.pdf" },
+    { "@id": "cpp:021", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-021", "title": "AIP Versioning", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-021_AIP_Versioning.pdf" },
+    { "@id": "cpp:022", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-022", "title": "Significant Properties Definition", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-022_Significant_Properties_Definition.pdf" },
+    { "@id": "cpp:023", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-023", "title": "Risk Definition and Extraction", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-023_Risk_Definition_and_Extraction.pdf" },
+    { "@id": "cpp:024", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-024", "title": "Enabling Discovery", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-024_Enabling_Discovery.pdf" },
+    { "@id": "cpp:025", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-025", "title": "Enabling Access", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-025_Enabling_Access.pdf" },
+    { "@id": "cpp:026", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-026", "title": "File Normalisation", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-026_File_Normalisation.pdf" },
+    { "@id": "cpp:027", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-027", "title": "File Repair", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-027_File_Repair.pdf" },
+    { "@id": "cpp:028", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-028", "title": "Creation of Derivatives", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-028_Creation_of_Derivatives.pdf" },
+    { "@id": "cpp:029", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-029", "title": "Ingest", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-029_Ingest.pdf" },
+    { "@id": "cpp:030", "@type": "skos:Concept", "inScheme": "cpp:Scheme", "topConceptOf": "cpp:Scheme", "label": "CPP-030", "title": "Refreshment", "page": "https://zenodo.org/records/16992452/files/EOSC-EDEN_CPP-030_Refreshment.pdf" }
   ]
 }

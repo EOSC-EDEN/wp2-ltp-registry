@@ -13,7 +13,41 @@ async function getServices(): Promise<DataService[]> {
 
 	const graph = json['@graph'] as any[];
 
-	cachedData = graph.filter(item => {
+	// Map raw JSON-LD keys (@id, @type) to application keys (id, type)
+	const mapEntity = (item: any): any => {
+		if (!item || typeof item !== 'object') return item;
+		
+		const newItem = { ...item };
+		
+		if (newItem['@id']) {
+			newItem.id = newItem['@id'];
+		}
+		
+		if (newItem['@type']) {
+			newItem.type = newItem['@type'];
+		}
+
+		if (newItem.publisher) newItem.publisher = mapEntity(newItem.publisher);
+		if (newItem.inCatalog) newItem.inCatalog = mapEntity(newItem.inCatalog);
+		
+		if (newItem.contactPoint && Array.isArray(newItem.contactPoint)) {
+			newItem.contactPoint = newItem.contactPoint.map(mapEntity);
+		}
+		
+		if (newItem.hasService && Array.isArray(newItem.hasService)) {
+			newItem.hasService = newItem.hasService.map(mapEntity);
+		}
+
+		if (newItem.containsProcess && Array.isArray(newItem.containsProcess)) {
+			newItem.containsProcess = newItem.containsProcess.map(mapEntity);
+		}
+
+		return newItem;
+	};
+
+	const mappedGraph = graph.map(mapEntity);
+
+	cachedData = mappedGraph.filter(item => {
 		if (!item.type) return false;
 		const type = Array.isArray(item.type) ? item.type : [item.type];
 		return type.some((t: string) => 
