@@ -10,7 +10,10 @@
 │   ├── query-dataservice-facets.rq
 │   ├── rdf-endpoint-query.ts
 │   ├── rdf-file-query.ts
-│   └── registry-data.ttl
+│   ├── registry-data.ttl
+│   ├── registry-query01-DataServices.rq
+│   ├── registry-query02-Contact.rq
+│   └── registry-query03-Orgs.rq
 ├── LICENSE
 ├── README.md
 ├── registry-frontend
@@ -65,9 +68,6 @@
 │   ├── svelte.config.js
 │   ├── tsconfig.json
 │   └── vite.config.ts
-├── registry-query01-DataServices.rq
-├── registry-query02-Contact.rq
-├── registry-query03-Orgs.rq
 ├── registry-schema.summary.tsv
 ├── registry-schema.yaml
 ├── requirements.txt

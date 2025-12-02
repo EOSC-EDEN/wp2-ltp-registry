@@ -1,3 +1,5 @@
+# registry-schema.yaml
+
 id: https://eden-fidelis.eu/example/registry
 name: repository-services-registry-schema
 description: proof-of-concept schema for describing the entities of EOSC-EDEN Repository Services Registry
