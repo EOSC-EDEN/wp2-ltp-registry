@@ -4,7 +4,6 @@ import type { DataService } from '$lib/types/registry';
 
 let cachedData: DataService[] | null = null;
 
-// Mock loading data from a document store (JSON file)
 async function getServices(): Promise<DataService[]> {
 	if (cachedData) return cachedData;
 
@@ -12,7 +11,19 @@ async function getServices(): Promise<DataService[]> {
 	const fileContent = await readFile(filePath, 'utf-8');
 	const json = JSON.parse(fileContent);
 
-	cachedData = json['@graph'] as DataService[];
+	const graph = json['@graph'] as any[];
+
+	// Filter: Only return DataServices or Catalogs (Exclude pure CPP definitions)
+	cachedData = graph.filter(item => {
+		const type = Array.isArray(item.type) ? item.type : [item.type];
+		return type.some((t: string) => 
+			t === 'dcat:DataService' || 
+			t === 'dcat:Catalog' || 
+			// Handle expanded URIs if necessary, but context usually compacts them
+			t.includes('DataService') || t.includes('Catalog')
+		);
+	}) as DataService[];
+
 	return cachedData;
 }
 
@@ -30,22 +41,19 @@ export interface SearchResult {
 export async function searchRegistry(filters: Map<string, string[]>): Promise<SearchResult> {
 	const allServices = await getServices();
 
-	// Helper to normalize types for comparison (e.g. "dcat:DataService" -> "Data Service")
 	const normalizeType = (uri: string | string[]) => {
 		const val = Array.isArray(uri) ? uri[0] : uri;
 		return val.replace(/^.*[:/]([^:/]+)$/, '$1').replace(/([A-Z])/g, ' $1').trim();
 	};
 
-	// 1. Filter Services based on nested document properties
+	// 1. Filter
 	const filteredServices = allServices.filter((service) => {
 		if (filters.size === 0) return true;
 
 		for (const [key, allowedValues] of filters.entries()) {
 			if (allowedValues.length === 0) continue;
-
 			let match = false;
 
-			// Logic to map filter keys to document properties
 			if (key === 'Publisher') {
 				const val = service.publisher?.name;
 				if (val && allowedValues.includes(val)) match = true;
@@ -60,8 +68,11 @@ export async function searchRegistry(filters: Map<string, string[]>): Promise<Se
 				if (allowedValues.some(v => contacts.includes(v))) match = true;
 			} else if (key === 'Contains Process') {
 				if (service.containsProcess) {
-					const titles = service.containsProcess.map((c) => c.title);
-					if (allowedValues.some((v) => titles.includes(v))) match = true;
+					// Check against full label "CPP-010: Title"
+					const cppLabels = service.containsProcess.map(c => 
+						c.label ? `${c.label}: ${c.title}` : c.title
+					);
+					if (allowedValues.some((v) => cppLabels.includes(v))) match = true;
 				}
 			}
 
@@ -70,34 +81,25 @@ export async function searchRegistry(filters: Map<string, string[]>): Promise<Se
 		return true;
 	});
 
-	// 2. Calculate Facets (Aggregation)
+	// 2. Aggregate
 	const facets: Record<string, FacetCount[]> = {
 		'Contains Process': [],
 		'Publisher': [],
 		'Type': [],
 		'Contact Point': [],
-		'Country': [],
-		// 'Page': [] // Uncomment if you really want to filter by URL, usually too noisy
+		'Country': []
 	};
 
-	// Helper to aggregate counts
 	const aggregate = (extractor: (s: DataService) => string | string[] | undefined) => {
 		const counts = new Map<string, number>();
 		filteredServices.forEach((s) => {
 			const rawVal = extractor(s);
 			if (!rawVal) return;
 			const values = Array.isArray(rawVal) ? rawVal : [rawVal];
-			
-			values.forEach(val => {
-				counts.set(val, (counts.get(val) || 0) + 1);
-			});
+			values.forEach(val => counts.set(val, (counts.get(val) || 0) + 1));
 		});
 		return Array.from(counts.entries())
-			.map(([val, count]) => ({
-				label: val,
-				value: val,
-				count
-			}))
+			.map(([val, count]) => ({ label: val, value: val, count }))
 			.sort((a, b) => b.count - a.count);
 	};
 
@@ -105,13 +107,13 @@ export async function searchRegistry(filters: Map<string, string[]>): Promise<Se
 	facets['Country'] = aggregate((s) => s.publisher?.countryName);
 	facets['Type'] = aggregate((s) => normalizeType(s.type));
 	facets['Contact Point'] = aggregate((s) => s.contactPoint?.map(c => c.fn));
-	// facets['Page'] = aggregate((s) => s.documentation); // Optional: Re-enable if needed
 
-	// Custom aggregation for CPPs (Array)
+	// Custom aggregation for CPPs to match "CPP-010: Title" format
 	const cppCounts = new Map<string, number>();
 	filteredServices.forEach((s) => {
 		s.containsProcess?.forEach((cpp) => {
-			cppCounts.set(cpp.title, (cppCounts.get(cpp.title) || 0) + 1);
+			const label = cpp.label ? `${cpp.label}: ${cpp.title}` : cpp.title;
+			cppCounts.set(label, (cppCounts.get(label) || 0) + 1);
 		});
 	});
 	facets['Contains Process'] = Array.from(cppCounts.entries())
