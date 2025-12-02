@@ -1,3 +1,4 @@
+<!-- CheckIcon.svelte -->
 <script lang="ts">
 	interface Props {
 		class?: string;

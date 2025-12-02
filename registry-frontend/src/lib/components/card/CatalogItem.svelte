@@ -1,3 +1,4 @@
+<!-- CatalogItem.svelte -->
 <script lang="ts">
 	import PropertyRow from './PropertyRow.svelte';
 	import PropertyList from './PropertyList.svelte';

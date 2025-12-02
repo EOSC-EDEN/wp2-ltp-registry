@@ -1,4 +1,8 @@
-# EDEN Registry Catalog - Proof of Concept
+```txt
+# registry-frontend/README.md
+```
+
+# Setup instructions
 
 ## Prerequisites
 
@@ -10,194 +14,137 @@ pnpm env use --global lts
 
 ## Quick Start
 
+This Proof of Concept now runs entirely without external database dependencies (Docker/Fuseki), using a local JSON-LD dataset to simulate a Document Store.
+
 ```bash
-# Install Dependencies
+# 1. Install Dependencies
 pnpm install
 
-# Start Fuseki and Load Data w/ Apache Jena Fuseki in Docker
-docker compose up -d
-
-# When prompted, select recommended version:
-# ▸ docker.io/stain/jena-fuseki:latest
-
-# Load the registry RDF data
-./load-fuseki-data.sh
-
-# Start Development Server
+# 2. Start Development Server
 npm run dev
 
-# To see the catalog interface, visit:
-http://localhost:5173
+# 3. View the catalog
+# Visit: http://localhost:5173
 ```
 
 ## Overview
 
-A web-based catalog interface for the EDEN Registry of Long-Term Preservation Services, demonstrating dynamic querying and filtering of RDF/DCAT-AP metadata via SPARQL.
+A web-based catalog interface for the EDEN Registry of Long-Term Preservation Services.
 
-This proof of concept demonstrates a modern approach to building a registry catalog interface that:
+This application demonstrates a modern approach to building a registry catalog that:
 
-1. **Queries semantic data** stored as RDF in a SPARQL endpoint (Apache Jena Fuseki)
-2. **Dynamically generates filters** based on the actual data properties
-3. **Provides interactive browsing** with real-time filtering capabilities
-4. **Renders metadata** in a user-friendly interface without hardcoding data structure
+1. Uses JSON-LD 1.1: Leverages Framed JSON-LD as the data interchange format, compliant with Web Standards and optimized for Document Stores (like ElasticSearch).
+2. Simulates Search Engine Logic: The backend logic performs filtering and faceting on structured documents, mimicking the behavior of an ElasticSearch index.
+3. Type-Safe Architecture: Uses strict TypeScript interfaces derived from the domain model (Services, Organizations, Contacts).
+4. Decoupled UI: The UI remains generic, receiving data through an Adapter layer, allowing the backend data structure to evolve without breaking the frontend.
 
-The PoC validates the feasibility of using SPARQL queries to power both faceted search and detailed data retrieval in a web application context.
+## Architecture
 
-## Proof of Concept Goals
+This PoC represents a shift from a Graph-Native approach (SPARQL) to a Document-Native approach (JSON-LD/ElasticSearch), which is often more suitable for performant search and discovery interfaces in EOSC contexts.
 
-This implementation demonstrates:
+### 1. Data Layer (JSON-LD)
+* Source: `static/registry-data.json`
+* Format: JSON-LD 1.1 (Framed).
+* Structure: Hierarchical documents. Unlike flat RDF triples, entities like `Publisher` and `ContactPoint` are nested *inside* the `DataService` object. This creates self-contained documents perfect for indexing.
 
-- **Semantic Web Standards**: Use of DCAT-AP vocabulary for describing data services, organizations, and contacts
-- **Dynamic Query Generation**: SPARQL queries that adapt to user-selected filters without requiring backend code changes
-- **Flexible Data Structure**: No hardcoded assumptions about properties - the UI adapts to what's in the data
-- **Modern Web Stack**: SvelteKit + Comunica query engine for efficient client-server communication
-- **Separation of Concerns**: Data, queries, and presentation logic are cleanly separated
+### 2. Service Layer (The "Search Engine")
+* Location: `src/lib/server/registry-service.ts`
+* Role: Simulates ElasticSearch.
+* Functionality: 
+ * Loads the JSON-LD data.
+ * Performs multi-faceted filtering (e.g., "Find services where `publisher.countryName` is Finland").
+ * Aggregates counts for facets (e.g., "How many services have `theme: Tech`?").
 
-## Architecture: Three Core Components
-
-### 1. UI Visualization Layer
-
-**Intent**: Provide an intuitive, responsive interface for browsing registry data without requiring users to understand RDF or SPARQL.
-
-**Implementation**:
-
-- SvelteKit components (`src/lib/components/`) render service cards with dynamic properties
-- Filter sidebar displays available facets derived from the data itself
-- Real-time interaction: selecting filters triggers immediate data re-querying
-- Responsive design works on both desktop and mobile devices
-
-**Key Principle**: The UI doesn't "know" what properties exist - it dynamically renders whatever comes back from the SPARQL queries. This means new properties added to the RDF data automatically appear in the interface.
-
-### 2. Aggregator Query (Facet Generation)
-
-**Intent**: Automatically discover what filters are available and relevant by analyzing the actual data in the registry.
-
-**Location**: `src/lib/data/query-dataservice-facets.rq`
-
-**How It Works**:
-
-```sparql
-# Conceptual flow:
-1. Find all DataServices
-2. For each property they have, count how many services have each value
-3. Return: property name, value, and count
-```
-
-The aggregator query answers: "What can users filter by, and how many results would each filter produce?"
-
-**Example Output**:
-
-```
-Publisher: DANS (1), EOSC (1), CERN (1)
-Theme: TECH (3), EDUC (1)
-Access Rights: PUBLIC (2), RESTRICTED (1)
-```
-
-**Key Innovation**: The facets aren't hardcoded - they emerge from the data. Add a new property to your RDF data, and it automatically becomes a filter option.
-
-### 3. Details Query (Filtered Data Retrieval)
-
-**Intent**: Retrieve complete information about data services, optionally filtered by user selections, while maintaining human-readable labels.
-
-**Location**: `src/lib/data/query-dataservice-details.rq`
-
-**How It Works**:
-
-```sparql
-# Conceptual flow:
-1. Find all DataServices (or those matching filters)
-2. Get ALL their properties and values
-3. For each property and value, derive human-readable labels
-4. Handle multiple values per property (e.g., multiple keywords)
-```
-
-**Dynamic Filtering**: The query includes a placeholder where filter clauses are injected based on user selections:
-
-```sparql
-# PLACEHOLDER: Dynamic filters will be injected here
-```
-
-When a user selects "Theme: TECH", the application injects:
-
-```sparql
-?service <http://www.w3.org/ns/dcat#theme> ?filterVal_theme .
-FILTER(?filterVal_theme IN (<http://publications.europa.eu/resource/authority/data-theme/TECH>))
-```
-
-**Label Extraction Intelligence**: The query attempts multiple strategies to get human-readable labels:
-
-1. Try `rdfs:label`, `foaf:name`, or `vcard:fn` depending on entity type
-2. Fall back to extracting the local part of the URI
-3. Format the result (replace hyphens, add spaces, capitalize)
-
-**Result**: Users see "DANS Data Vault Catalog" instead of raw URIs, and properties appear as "Access Rights" instead of `dct:accessRights`.
+### 3. Adapter Layer
+* Location: `src/lib/utils/adapter.ts`
+* Role: Transforms the strict, typed Domain objects (from `registry.ts`) into the generic Property Lists used by the UI components. This ensures the visualization layer doesn't need to know the specific shape of the backend data.
 
 ## Data Flow
 
 ```
 User opens page
-    ↓
-Server executes TWO parallel queries:
-    1. Facet aggregator → "What filters are available?"
-    2. Details query → "Show all services"
-    ↓
-UI renders service cards + filter sidebar
-    ↓
-User clicks filter (e.g., "Publisher: DANS")
-    ↓
-Form submission with filter selection
-    ↓
-Server re-executes BOTH queries with filter injected
-    ↓
-UI updates to show filtered results + updated facet counts
+ ↓
+Server Loader (+page.server.ts) calls Registry Service
+ ↓
+Registry Service loads JSON-LD → Filters Data → Calculates Facets
+ ↓
+Server passes data to Adapter
+ ↓
+Adapter converts Typed Objects to UI Property Lists
+ ↓
+UI renders Service Cards + Filter Sidebar
 ```
 
-## Technical Implementation
-
-### SPARQL Endpoint
-
-The PoC uses Apache Jena Fuseki as the SPARQL endpoint, running in Docker:
-
-- **Data**: RDF/Turtle file with DCAT-AP vocabulary
-- **Queries**: Executed via Comunica query engine
-- **Access**: HTTP API at `http://localhost:3030/registry/sparql`
-
-### Query Engine
-
-[Comunica](https://comunica.dev/) is used to execute SPARQL queries from Node.js:
-
-- Handles SPARQL protocol communication
-- Streams results efficiently
-- Works with any SPARQL 1.1 endpoint
-
-### Server-Side Processing
-
-SvelteKit server load functions (`src/routes/+page.server.ts`):
-
-- Execute SPARQL queries on page load and filter actions
-- Transform flat query results into nested data structures for the UI
-- Handle filter state and query injection
-
-### Environment Configuration
+## Project Structure
 
 ```bash
-# .env (optional)
-SPARQL_ENDPOINT=http://localhost:3030/registry/sparql
+src/
+├── lib/
+│ ├── components/  # UI components (Visual Layer)
+│ │ ├── card/  # Service card rendering
+│ │ └── shell/  # Layout and filters
+│ ├── context/   # Svelte context for state management
+│ ├── server/   # Backend Logic
+│ │ └── registry-service.ts # Mocks ElasticSearch query logic
+│ ├── types/   # Domain Model
+│ │ └── registry.ts # TypeScript interfaces (Service, Org, etc.)
+│ └── utils/
+│  └── adapter.ts # Maps Domain Types to UI Components
+├── routes/
+│ ├── +page.svelte  # Main catalog page
+│ └── +page.server.ts # Server load function
+└── static/
+ └── registry-data.json # The Database (JSON-LD)
 ```
 
-The endpoint URL is configurable, allowing the same codebase to work with different data sources.
+## Extending the Registry
 
-## Key Innovations Demonstrated
+### Adding New Data
 
-1. **No Backend Data Model**: The application has no hardcoded knowledge of what properties exist. Everything is derived from SPARQL queries.
+```json
+# Open json data
+static/registry-data.json
 
-2. **Dynamic Filter Generation**: Filters aren't configured - they emerge from analyzing the data. Add a new property type, it becomes filterable automatically.
+# Add a new object to the @graph array
+# Ensure it follows the structure defined in @context and `src/lib/types/registry.ts`
 
-3. **Multi-Value Property Handling**: The architecture gracefully handles properties with multiple values (keywords, themes) and single values (title, description).
+# Example json:
+{
+ "id": "https://example.com/my-service",
+ "type": "dcat:DataService",
+ "title": "My New Service",
+ "publisher": {
+ "id": "https://example.com/org/my-org",
+ "type": "org:Organization",
+ "name": "My Organization",
+ "countryName": "Germany"
+ }
+}
+```
 
-4. **Label Resolution**: Sophisticated SPARQL patterns extract human-readable labels from RDF data, falling back gracefully when labels aren't present.
+The application will automatically pick up the change on the next refresh (or Hot Module Reload).
 
-5. **Real-Time Filtering**: User interactions trigger server-side SPARQL queries with injected filters, demonstrating how semantic queries can power interactive UIs.
+### Adding New Properties
+
+1. Update Data: Add the property to `static/registry-data.json`.
+2. Update Type: Add the field to the `DataService` interface in `src/lib/types/registry.ts`.
+3. Update Adapter: Add a line in `src/lib/utils/adapter.ts` to map this new field to a UI label.
+ ```typescript
+ if (service.myNewField) {
+  addProp('My New Label', service.myNewField);
+ }
+ ```
+4. Update Search: If you want to filter by it, add logic to `searchRegistry` in `src/lib/server/registry-service.ts`.
+
+## Technical Implementation Details
+
+### JSON-LD Compliance
+
+The data file is fully compliant with JSON-LD 1.1. It uses a `@context` to map short keys (like `title`) to full semantic URIs (like `http://purl.org/dc/terms/title`). This ensures that while we are using "simple JSON" for development ease and performance, the data remains semantically interoperable.
+
+### Why this architecture?
+
+This architecture was chosen to align with EOSC (European Open Science Cloud) integration patterns, where ElasticSearch is the standard for discovery. By structuring data as framed JSON-LD documents now, the transition to a production ElasticSearch cluster is trivial: one simply pushes the JSON documents to the index, and replaces the in-memory `registry-service.ts` with an ElasticSearch Client.
 
 ## Development Commands
 
@@ -217,64 +164,3 @@ npm run build
 # Preview production build
 npm run preview
 ```
-
-## Project Structure
-
-```
-src/
-├── lib/
-│   ├── components/      # UI components
-│   │   ├── card/        # Service card rendering
-│   │   └── shell/       # Layout and filters
-│   ├── context/         # Svelte context for state management
-│   ├── data/            # SPARQL query files (.rq)
-│   └── server/          # Server-side query execution
-│       ├── rdf-file-query.ts      # Query local RDF files
-│       └── rdf-endpoint-query.ts  # Query SPARQL endpoint
-├── routes/
-│   ├── +page.svelte        # Main catalog page
-│   └── +page.server.ts     # Server load function
-└── static/
-    └── robots.txt
-```
-
-## Extending the Registry
-
-### Adding New Data
-
-Add new services or properties to `../registry-data.ttl`:
-
-```turtle
-<https://example.com/my-service>
-    rdf:type dcat:DataService ;
-    dct:title "My New Service"@en ;
-    myprefix:customProperty "Custom Value" .
-```
-
-Ensure your command-line prompt is in `registry-frontend/` directory. 
-
-Reload data: `./load-fuseki-data.sh`
-
-The UI automatically displays the new service and makes `customProperty` filterable.
-
-### Adding New Query Patterns
-
-Create new `.rq` files in `src/lib/data/` and reference them in query functions.
-
-### Switching Data Sources
-
-Change `SPARQL_ENDPOINT` in `.env` to point to a different SPARQL endpoint - no code changes needed.
-
-## Limitations and Future Directions
-
-This PoC demonstrates core concepts but has intentional limitations:
-
-- **Performance**: Not optimized for large datasets (thousands of services)
-- **Pagination**: All results loaded at once
-- **Query Optimization**: Some queries could be more efficient
-- **Authentication**: No access control on SPARQL endpoint
-- **Validation**: No data validation or error handling for malformed RDF
-
-## Docker Setup
-
-See `fuseki/README.md` for comprehensive Fuseki configuration and troubleshooting.

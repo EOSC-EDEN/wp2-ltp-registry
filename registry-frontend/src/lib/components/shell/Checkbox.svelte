@@ -1,3 +1,4 @@
+<!-- Checkbox.svelte -->
 <script lang="ts">
 	import CheckIcon from '../icons/CheckIcon.svelte';
 

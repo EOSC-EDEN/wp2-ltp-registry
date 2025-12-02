@@ -1,3 +1,4 @@
+<!-- FilterOption.svelte -->
 <script lang="ts">
 	import Checkbox from './Checkbox.svelte';
 

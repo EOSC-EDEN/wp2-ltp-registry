@@ -1,3 +1,6 @@
+# archived_from:
+# registry-frontend/docker-compose.yml
+
 version: '3.8'
 
 services:

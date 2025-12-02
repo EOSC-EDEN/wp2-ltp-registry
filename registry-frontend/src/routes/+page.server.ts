@@ -1,21 +1,15 @@
-import { queryDataServiceFacets, queryDataServiceDetails } from '$lib/server/rdf-endpoint-query';
+import { searchRegistry } from '$lib/server/registry-service';
+import { adaptServiceToProperties } from '$lib/utils/adapter';
 import type { PageServerLoad, Actions } from './$types';
-import { groupPropertiesByService } from '$lib/context/catalog-context.svelte';
-import type { DataServiceProperty } from '$lib/context/catalog-context.svelte';
 
 export const load: PageServerLoad = async () => {
-	// Query facets for filters
-	const facets = await queryDataServiceFacets();
-
-	// Query DataService details with all properties
-	const detailsResult = await queryDataServiceDetails();
-	const properties = detailsResult.bindings as unknown as DataServiceProperty[];
-	const servicesMap = groupPropertiesByService(properties);
-	const services = Array.from(servicesMap.values());
+	// Initial load: No filters
+	const filters = new Map<string, string[]>();
+	const result = await searchRegistry(filters);
 
 	return {
-		facets,
-		services
+		facets: result.facets,
+		services: result.services.map(adaptServiceToProperties)
 	};
 };
 
@@ -32,18 +26,12 @@ export const actions = {
 			}
 		}
 
-		// Re-query with filters
-		const detailsResult = await queryDataServiceDetails(filters);
-		const properties = detailsResult.bindings as unknown as DataServiceProperty[];
-		const servicesMap = groupPropertiesByService(properties);
-		const services = Array.from(servicesMap.values());
-
-		const facets = await queryDataServiceFacets();
+		const result = await searchRegistry(filters);
 
 		return {
 			success: true,
-			services,
-			facets
+			facets: result.facets,
+			services: result.services.map(adaptServiceToProperties)
 		};
 	}
 } satisfies Actions;

@@ -1,3 +1,6 @@
+# archived_from:
+# registry-query03-Orgs.rq
+
 PREFIX adms:  <http://www.w3.org/ns/adms#>
 PREFIX dcat:  <http://www.w3.org/ns/dcat#>
 PREFIX dct:   <http://purl.org/dc/terms/>

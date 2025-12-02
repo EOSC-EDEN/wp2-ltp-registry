@@ -1,3 +1,4 @@
+<!-- CatalogShell.svelte -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import MobileFilters from './MobileFilters.svelte';
@@ -5,26 +6,20 @@
 	import DesktopFilters from './DesktopFilters.svelte';
 	import {
 		setCatalogContext,
-		createCatalogContextValue,
-		type FacetBinding,
-		type QueryBinding
+		createCatalogContextValue
 	} from '$lib/context/catalog-context.svelte';
-
-	interface SortOption {
-		label: string;
-		href: string;
-		selected?: boolean;
-	}
+	import type { FacetCount } from '$lib/server/registry-service';
 
 	interface Props {
 		title: string;
-		facets: FacetBinding[] | QueryBinding[];
+		facets: Record<string, FacetCount[]>;
 		onFilterChange?: (filters: Map<string, string[]>) => Promise<void>;
 		children?: Snippet;
 	}
 
 	let { title, facets, onFilterChange, children }: Props = $props();
 
+	// Initialize context with the clean facet object
 	const catalogContext = createCatalogContextValue(facets, onFilterChange);
 	setCatalogContext(catalogContext);
 

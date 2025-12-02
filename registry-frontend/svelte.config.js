@@ -1,4 +1,5 @@
-import adapter from '@sveltejs/adapter-auto';
+// registry-frontend/svelte.config.js
+import adapter from '@sveltejs/adapter-node'; // adapter-node, instead of adapter-auto
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -8,9 +9,7 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
-		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
-		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
+		// adapter-node creates a standalone Node server in build/
 		adapter: adapter()
 	}
 };

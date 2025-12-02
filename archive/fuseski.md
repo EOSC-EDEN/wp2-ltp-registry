@@ -1,4 +1,11 @@
-# Fuseki Docker Setup
+# fuseki.md
+
+```txt
+# archived from
+# registry-frontend/fuseki/README.md
+```
+
+## Fuseki Docker Setup
 
 This directory contains configuration and scripts for running Apache Jena Fuseki in Docker.
 

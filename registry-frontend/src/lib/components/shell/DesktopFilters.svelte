@@ -1,3 +1,4 @@
+<!-- DesktopFilters.svelte -->
 <script lang="ts">
 	import FilterSection from './FilterSection.svelte';
 	import { getCatalogContext } from '$lib/context/catalog-context.svelte';

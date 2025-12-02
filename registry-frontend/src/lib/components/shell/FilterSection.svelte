@@ -1,3 +1,4 @@
+<!-- FilterSection.svelte -->
 <script lang="ts">
 	import PlusIcon from '../icons/PlusIcon.svelte';
 	import MinusIcon from '../icons/MinusIcon.svelte';

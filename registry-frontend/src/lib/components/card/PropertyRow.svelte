@@ -1,3 +1,4 @@
+<!-- PropertyRow.svelte -->
 <script lang="ts">
 	interface Props {
 		label: string;
